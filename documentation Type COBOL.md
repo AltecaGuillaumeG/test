@@ -1,289 +1,376 @@
-# Documentation du projet COBOL
+# Documentation technique du dépôt COBOL
 
-## 1. Présentation générale
+## 1. Objet du dépôt
 
-Ce dépôt, nommé `AltecaGuillaumeG/test`, contient une série de programmes COBOL de démonstration destinés à illustrer les concepts de base de la programmation COBOL ainsi que certaines constructions avancées utilisées dans les applications de type métier et scientifique.
+Le dépôt `AltecaGuillaumeG/test` est une collection de programmes COBOL de démonstration conçus pour illustrer les mécanismes fondamentaux du langage et les pratiques de mise en œuvre dans des cas d'usage très différents.
 
-Le dépôt est entièrement composé en COBOL (`100% COBOL`), ce qui confirme qu'il s'agit d'un projet pédagogique orienté apprentissage du langage.
+Le point clé est que le dépôt n'est pas un système applicatif unique ; c'est une galerie d'exemples de code COBOL, chacun focalisé sur un concept spécifique :
 
-La description du dépôt est la suivante :
+- traitement des chaînes de caractères,
+- structures de données et tableaux,
+- calculs arithmétiques et comptables,
+- conditions et états nommés,
+- manipulation de dates,
+- logique scientifique avec nombres flottants,
+- interactions I/O utilisateur.
 
-> document pour test IA
-
-Le but principal du projet est de présenter des exemples de code COBOL variés pour montrer :
-
-- la structure des programmes COBOL,
-- la gestion des données et des formats d'affichage,
-- les instructions de calcul et de traitement conditionnel,
-- la manipulation de chaînes de caractères,
-- la gestion des dates et des montants,
-- l'usage de tableaux, de conditions, et d'instructions d'entrée/sortie.
+Le dépôt est entièrement en COBOL, ce qui en fait un référentiel pédagogique très homogène.
 
 ---
 
-## 2. Contexte du dépôt
+## 2. Architecture du dépôt
 
-Le dépôt contient plusieurs fichiers `.CBL` représentant des mini-programmes indépendants, chacun ayant pour objectif de démontrer un aspect particulier du langage COBOL.
+La structure est de type "mini-programmes indépendants" à la racine du dépôt. Chaque fichier `.CBL` est un programme autonome avec :
 
-Les programmes présents à la racine incluent notamment :
+- une division `IDENTIFICATION`,
+- une `DATA DIVISION`,
+- une `PROCEDURE DIVISION`.
 
-- `HELLO.CBL`
-- `STRINGIT.CBL`
-- `INVCALC.CBL`
-- `ATTRACT.CBL`
-- `DATE1.CBL`
-- `DATE2.CBL`
-- `IFEVAL.CBL`
-- `COND88.CBL`
-- `BRAKES.CBL`
-- `HEX2TEXT.CBL`
-- `MOVEME.CBL`
-- `NOTBOOL.CBL`
-- `REFORMER.CBL`
-- `CPSEQFR.CBL`
-- `CPSEQVR.CBL`
+Les programmes partagent un même modèle d'organisation, mais diffèrent fortement par leur logique métier et les constructions COBOL qu'ils exploitent.
 
-Le dépôt a donc une logique de bibliothèque d'exemples pédagogiques plutôt qu'un système applicatif complet.
+L'ensemble des programmes est lié par une même philosophie :
+
+1. définir des structures de données explicites,
+2. manipuler des valeurs via `MOVE`, `INITIALIZE`, `STRING`, `INSPECT`,
+3. calculer ou filtrer des valeurs via `IF`, `PERFORM`, `COMPUTE`,
+4. afficher le résultat via `DISPLAY`.
+
+Cela fait du dépôt un bon ensemble d'exemples de référence pour apprendre la programmation COBOL sur des cas concrets et faciles à isoler.
 
 ---
 
-## 3. Structure typique d'un programme COBOL
+## 3. Évolution logique des exercices
 
-Les fichiers du dépôt suivent le schéma habituel de COBOL :
+Les programmes du dépôt peuvent être lus comme une progression didactique :
 
-1. `IDENTIFICATION DIVISION`
-   - identification du programme,
-   - nom du programme (`PROGRAM-ID`).
+- `HELLO.CBL` : base sur les chaînes et les intrinsics,
+- `STRINGIT.CBL` : manipulation de données textuelles avancée,
+- `INVCALC.CBL` : logique métier avec calculs monétaires,
+- `ATTRACT.CBL` : usage des flottants et calcul scientifique,
+- autres fichiers complémentaires : conditions, dates, formatages, états nommés.
 
-2. `DATA DIVISION`
-   - définition des variables,
-   - zones de travail (`WORKING-STORAGE SECTION`),
-   - fichiers, structures, tableaux, données numériques et alphabétiques.
-
-3. `PROCEDURE DIVISION`
-   - logique exécutive du programme,
-   - traitement, calculs, affichage, validation, boucles, conditionnels.
-
-Cette organisation est visible dans tous les programmes, notamment dans `HELLO.CBL` et `INVCALC.CBL`.
+Les programmes sont donc liés par des notions transverses, même s'ils sont conçus comme des sujets distincts.
 
 ---
 
-## 4. Analyse des programmes principaux
+## 4. Vue détaillée des programmes
 
-### 4.1. `HELLO.CBL`
+### 4.1. `HELLO.CBL` – introduction au traitement textuel
 
-Ce programme est un exemple de base centré sur la saisie d'un nom et son affichage sous forme de message de bienvenue.
+#### Rôle
+Ce programme est l'exemple le plus simple et le plus pédagogique du dépôt. Il montre la construction d'un message de type `Hello, <nom> !` à partir d'une donnée saisie par l'utilisateur.
 
-Fonctionnalités principales :
+#### Structure technique
 
-- affichage d'un message d'invite,
-- saisie d'une valeur via `ACCEPT`,
-- suppression des espaces en fin de chaîne,
-- utilisation de `INSPECT` et `REVERSE`,
-- construction d'une chaîne finale avec `STRING`.
+- `WS-PROMPT` : message d'invitation,
+- `WS-FRIEND` : valeur entrée par l'utilisateur,
+- `WS-GREETING` : préfixe du message,
+- `WS-EXCLAMATION-POINT` : point d'exclamation,
+- `WS-MESSAGE` : zone de sortie finale,
+- `WS-TRAILING-SPACES` : compteur de blancs de fin de chaîne.
 
-Exemple de logique :
+#### Logique
 
-- le programme demande à l'utilisateur d'entrer un nom ;
-- il identifie le nombre d'espaces à la fin de la chaîne ;
-- il construit un message du type : `Hello, Jean!`.
+1. `DISPLAY WS-PROMPT` affiche l'invite.
+2. `ACCEPT WS-FRIEND` récupère la saisie utilisateur.
+3. `INSPECT FUNCTION REVERSE(WS-FRIEND) TALLYING WS-TRAILING-SPACES FOR LEADING SPACES` détecte les espaces en fin de chaîne.
+4. `STRING ... INTO WS-MESSAGE` concatène :
+   - le texte `Hello, `,
+   - le nom sans espaces de fin,
+   - `!`.
+5. `DISPLAY WS-MESSAGE` affiche le message final.
 
-Ce programme illustre les notions suivantes :
+#### Intérêt technique
+C'est un bon exemple de :
 
-- `PIC X(...)` pour les chaînes de caractères,
-- `FUNCTION REVERSE(...)`,
-- `INSPECT ... TALLYING ... FOR LEADING SPACES`,
-- `STRING ... INTO ...`,
-- `DISPLAY` et `ACCEPT`.
+- `PIC X(...)` pour le texte,
+- `FUNCTION REVERSE`,
+- `INSPECT ... FOR LEADING SPACES`,
+- travail sur des zones de données de taille fixe,
+- construction d'un message final via `STRING`.
 
----
-
-### 4.2. `STRINGIT.CBL`
-
-Ce programme démontre la manipulation avancée des données textuelles.
-
-Il traite notamment :
-
-- `MOVE` entre zones de données,
-- `INSPECT` pour calculer la longueur d'une chaîne,
-- `reference modification` comme `WS-GIVEN-NAME(1:WS-GIVEN-NAME-LENGTH)`,
-- `STRING` pour concaténer des éléments,
-- `UNSTRING` et autres techniques de micro-traitement de texte (présentes dans les thèmes du fichier et des exemples associés).
-
-Il montre comment assembler des noms dans l'ordre `Prénom - Deuxième prénom - Nom`. Le code met en œuvre plusieurs approches :
-
-- déplacement simple de données,
-- calcul de longueur avant espace,
-- concaténation avec espace,
-- construction d'une zone de sortie à partir de sous-chaînes.
-
-Ce programme est très utile pour comprendre la gestion des chaînes et la logique de formatage en COBOL.
+#### Lien avec les autres programmes
+Ce programme sert de base pour la logique de manipulation de chaînes retrouvée ensuite dans `STRINGIT.CBL`. La différence est que `HELLO.CBL` traite un cas concret et simple, tandis que `STRINGIT.CBL` approfondit des manipulations plus structurées.
 
 ---
 
-### 4.3. `INVCALC.CBL`
+### 4.2. `STRINGIT.CBL` – manipulation avancée des chaînes
 
-Ce programme est un exemple de logique de traitement comptable et de facturation.
+#### Rôle
+C'est le programme de référence pour les opérations sur chaînes de caractères en COBOL. Il montre comment assembler, découper et formater des textes selon des contraintes précises.
 
-Il met en œuvre :
+#### Structure technique
 
-- des tableaux de lignes de facture,
-- des montants monétaires en `COMP-3`,
-- des données conditionnelles avec `88` levels,
-- le calcul du total avant taxe,
-- le calcul de la taxe de vente,
-- le calcul du total final,
-- l'affichage d'une facture formatée.
+- `WS-NAME` est une zone composite contenant :
+  - `WS-FAMILY-NAME`,
+  - `WS-GIVEN-NAME`,
+  - `WS-MIDDLE-NAME`.
+- `WS-NAMES-IN-OUTPUT-ORDER` regroupe les champs dans l'ordre d'affichage final.
+- `WS-NAME-LENGTHS` contient les longueurs calculées pour chaque nom.
+- `WS-OUTPUT-AREA` sert à la concaténation finale.
 
-Les concepts qu'il illustre sont :
+#### Logique
+Le programme exécute quatre exemples successifs :
 
-- `PIC S9(07)V99 COMP-3` pour les valeurs monétaires,
-- `OCCURS` pour les tableaux de lignes,
-- `88` conditions nommées (`IS-RETURN`, `TAXABLE-ITEM`, `NONTAXABLE-ITEM`),
-- `PERFORM ... VARYING`,
-- `MULTIPLY`, `ADD`, `MOVE`, `IF`, `ELSE`, `END-IF`.
+1. `MOVE` direct entre zones de données.
+2. `INSPECT ... TALLYING ... FOR CHARACTERS BEFORE INITIAL SPACE` pour calculer la longueur effective d'un mot.
+3. `STRING` pour concaténer `Prénom + Espace + Deuxième prénom + Espace + Nom` dans une zone de sortie.
+4. `STRING` combiné à `reference modification` pour produire un résultat de taille maîtrisée.
 
-C'est un bon exemple de logique métier en COBOL et correspond à des cas typiques d'applications de comptabilité ou de gestion.
+#### Points techniques les plus importants
 
----
+- `WS-GIVEN-NAME(1:WS-GIVEN-NAME-LENGTH)` : référence partielle d'un élément de donnée.
+- `INITIALIZE WS-NAME-LENGTHS` : remise à zéro des counters.
+- `DISPLAY '<' WS-OUTPUT-AREA(1:WS-OUTPUT-LENGTH) '>'` : affichage d'une sous-zone de sortie.
+- `DELIMITED BY SPACE` et `DELIMITED BY SIZE` : mécanismes de découpe et d'insertion.
 
-### 4.4. `ATTRACT.CBL`
+#### Intérêt de ce programme
+C'est le meilleur exemple du dépôt pour illustrer les concepts suivants :
 
-Ce programme est un exemple plus scientifique, bien que le langage COBOL soit surtout associé aux applications de gestion.
+- stockage de données structurées,
+- décodage de chaînes,
+- logique de concaténation explicite,
+- contrôle précis de la longueur des données,
+- formatage d'affichage.
 
-Il calcule l'attraction gravitationnelle entre deux corps dans l'espace en utilisant des données à virgule flottante (`COMP-2`).
-
-Il expose :
-
-- l'usage de données flottantes,
-- la lecture de paramètres utilisateur via `ACCEPT`,
-- le calcul de distance et de force,
-- l'affichage des résultats,
-- l'utilisation de fonctions mathématiques `SQRT`, `COS`, `SIN`, `ATAN`.
-
-Même si ce programme est davantage démonstratif que pratique, il montre que COBOL peut être utilisé au-delà du domaine purement financier.
-
----
-
-## 5. Concepts COBOL mis en évidence dans le dépôt
-
-### 5.1. Types et formats de données
-
-Les variables utilisent des descriptions de type comme :
-
-- `PIC X(...)` : caractères alphanumériques,
-- `PIC 9(...)` : chiffres,
-- `PIC S9(...)` : nombres signés,
-- `PIC ... COMP-3` : données numériques compactées,
-- `PIC ... COMP-2` : nombres à virgule flottante.
-
-Exemples observés :
-
-- `PIC X(80) VALUE SPACES`
-- `PIC S9(07)V99 COMP-3`
-- `PIC SV9(5) COMP-3`
-- `PIC X(10)`
-- `PIC 9.`
-
-### 5.2. Conditions nommées
-
-L'instruction `88` permet de définir des états logiques à partir d'une variable.
-
-Exemples :
-
-- `88 IS-RETURN VALUE 'R'.`
-- `88 TAXABLE-ITEM VALUE 'T'.`
-
-Cela permet d'écrire un code plus lisible que de comparer des valeurs brutes.
-
-### 5.3. Boucles et exécution conditionnelle
-
-Les programmes utilisent :
-
-- `IF ... END-IF`,
-- `EVALUATE` (présent dans d'autres exemples du dépôt),
-- `PERFORM ... VARYING`,
-- `PERFORM` de sections et sous-routines,
-- `GOBACK` pour terminer un programme.
-
-### 5.4. Traitement de texte
-
-Les exemples montrent la force de COBOL pour manipuler des chaînes :
-
-- découpage,
-- concaténation,
-- conversion de valeurs,
-- retrait d'espaces,
-- référence partielle à une sous-zone (`A(1:10)`).
-
-### 5.5. Calculs numériques
-
-Les programmes utilisent largement :
-
-- `ADD`,
-- `SUBTRACT`,
-- `MULTIPLY`,
-- `DIVIDE`,
-- `COMPUTE`,
-- `MOVE`,
-- `INITIALIZE`.
+#### Lien avec `HELLO.CBL`
+`HELLO.CBL` montre la base de la chaîne. `STRINGIT.CBL` applique la même logique en mode plus formalisé sur plusieurs champs structurés. Les deux sont donc directement liés : l'un est le cas simple, l'autre la version technique et généralisée.
 
 ---
 
-## 6. Points forts pédagogiques du dépôt
+### 4.3. `INVCALC.CBL` – logique métier et calcul comptable
 
-Le dépôt est particulièrement utile pour :
+#### Rôle
+Ce programme est un exemple de traitement comptable de type facture. Il illustre le plus clairement le COBOL "application métier".
 
-- apprendre la syntaxe COBOL de manière progressive,
-- comprendre l'organisation en divisions,
-- découvrir les types de variables et les formats d'affichage,
-- étudier les traitements de chaîne et de valeurs numériques,
-- se familiariser avec les programmes de type application métier.
+#### Structure technique
 
-Les exemples sont simples, en petits morceaux, et permettent de consolider les bases sans introduire une complexité excessive.
+Le programme définit :
+
+- des taux de taxe,
+- des variables cumulatives,
+- un enregistrement `INVOICE`,
+- des sous-structures de ligne d'article : `INV-LINE`,
+- des champs de sortie formatés (`INV-TOTAL-AMOUNT-FORMATTED`).
+
+Quelques éléments importants :
+
+- `INV-LINE OCCURS 1 TO 100 DEPENDING ON INV-LINE-ITEM-COUNT`
+- `INV-LINE-UNIT-PRICE PIC S9(05)V99 COMP-3`
+- `INV-LINE-QUANTITY PIC S9(05) COMP-3`
+- `TAXABLE-ITEM` / `NONTAXABLE-ITEM` via `88` levels
+
+#### Logique métier
+
+1. Initialisation des données de facture.
+2. Création de trois lignes d'articles avec quantité, prix et statut taxable.
+3. Calcul cumulé :
+   - `CUMULATIVE-PRICE-BEFORE-TAX`
+   - `LINE-WORKING-TOTAL`
+   - `LINE-WORKING-TAX`
+   - `CUMULATIVE-PRICE-WITH-TAX`
+   - `CUMULATIVE-SALES-TAX`
+4. Vérification de la validité des données via conditions.
+5. Impression détaillée de la facture.
+
+#### Points techniques importants
+
+- `PERFORM WITH TEST BEFORE VARYING WORKING-INDEX ... UNTIL ...`
+- `MULTIPLY ... BY ... GIVING ...`
+- `ADD ... TO ...`
+- `IF TAXABLE-ITEM(WORKING-INDEX)`
+- `INITIALIZE INVOICE REPLACING ALPHANUMERIC DATA BY SPACES NUMERIC DATA BY ZEROES`
+
+#### Intérêt du programme
+Il montre que COBOL est particulièrement adapté à :
+
+- la modélisation de données de type facture,
+- les calculs arithmétiques sur données monétaires,
+- les traitements par lots,
+- la présentation de résultats sous forme structurée et lisible.
+
+#### Lien avec les autres programmes
+`INVCALC.CBL` est le prolongement naturel de `STRINGIT.CBL` vers des données métier structurées. En effet, dans les deux programmes, on voit la même logique :
+
+- structurer les données,
+- calculer sur des champs précis,
+- formater une sortie finale.
+
+La différence est que `STRINGIT.CBL` manipule des textes, tandis que `INVCALC.CBL` manipule des données financières et comptables.
 
 ---
 
-## 7. Exemple de compilation et d'exécution
+### 4.4. `ATTRACT.CBL` – calcul scientifique et flottants
 
-Sous GNU COBOL, un programme peut généralement être compilé avec une commande du type :
+#### Rôle
+Ce programme sort du cadre habituel du COBOL de gestion. Il démontre qu'un programme COBOL peut aussi traiter des calculs scientifiques en utilisant des nombres flottants.
 
-```bash
-cobc -x HELLO.CBL -o HELLO
-./HELLO
+#### Structure technique
+
+Le code utilise :
+
+- `COMP-2` pour les variables flottantes,
+- `Body occurs 2 indexed by BodyIx` pour représenter deux corps,
+- `mass`, `vx`, `vy`, `px`, `py` pour les attributs physiques,
+- `G` comme constante gravitationnelle.
+
+#### Logique
+
+1. Demande des paramètres pour deux corps.
+2. Stocke leurs masses et coordonnées.
+3. Calcule :
+   - `dx = px(1) - px(2)`
+   - `dy = py(1) - py(2)`
+   - `d = FUNCTION SQRT((dx * dx) + (dy * dy))`
+4. Détermine la force d'attraction :
+   - `f = (G * mass(1) * mass(2)) / (d * d)`
+5. Calcule une direction avec `COS` / `SIN` et affiche les composantes `fx` et `fy`.
+
+#### Points techniques importants
+
+- `COMP-2` pour les nombres à virgule flottante,
+- `indexed by BodyIx` pour manipuler un tableau de 2 éléments,
+- `FUNCTION SQRT`, `FUNCTION COS`, `FUNCTION SIN`, `FUNCTION ATAN`,
+- `ACCEPT mass(BodyIx)` pour lire des valeurs utilisateur.
+
+#### Intérêt de ce programme
+Il montre que COBOL n'est pas limité aux applications de gestion. La différence avec `INVCALC.CBL` est nette :
+
+- `INVCALC.CBL` est orienté métier et calculs décimaux,
+- `ATTRACT.CBL` est orienté mathématique et flottants.
+
+#### Lien avec le dépôt
+Ce programme complète la palette des exemples. Il illustre le fait que le dépôt n'est pas seulement un recueil de méthodes de gestion, mais aussi une démonstration de la polyvalence du langage COBOL.
+
+---
+
+## 5. Fichiers complémentaires et leur rôle dans le corpus
+
+Le dépôt contient plusieurs autres fichiers qui renforcent le corpus d'exemples. Ils ont chacun un rôle spécifique, souvent dans des domaines plus ciblés :
+
+- `DATE1.CBL`, `DATE2.CBL` : manipulation des dates et formatage des calendriers,
+- `IFEVAL.CBL` : exemples de structures conditionnelles avancées,
+- `COND88.CBL` : conditions nommées et états logiques basés sur `88` levels,
+- `BRAKES.CBL` : logique de contrôle, probablement orientée système/logique,
+- `HEX2TEXT.CBL` : conversion hexadécimal / texte,
+- `MOVEME.CBL` : manipulation de données et déplacement entre zones,
+- `NOTBOOL.CBL` : exemple de négation logique, conditions booléennes,
+- `REFORMER.CBL` : transformations de chaînes ou reformattage,
+- `CPSEQFR.CBL`, `CPSEQVR.CBL` : traitement de séquences, probablement comparant l'ordre ou la séquence de valeurs,
+- `COND88.CBL` : cas d'école sur les états conditionnels.
+
+Ces fichiers ne sont pas des applications complètes ; ce sont des briques de démonstration dont la fonction est de montrer qu'un même langage peut adresser de nombreux problèmes de logique et de mise en forme.
+
+---
+
+## 6. Liens structurels entre les programmes
+
+Les programmes du dépôt sont liés par plusieurs niveaux de cohérence :
+
+### 6.1. Même structure de base
+Tous les programmes respectent le même squelette :
+
+```cobol
+IDENTIFICATION DIVISION.
+PROGRAM-ID. ...
+DATA DIVISION.
+WORKING-STORAGE SECTION.
+PROCEDURE DIVISION.
 ```
 
-Pour un autre programme :
+### 6.2. Même logique de développement
+Ils utilisent les mêmes paradigmes de programmation COBOL :
 
-```bash
-cobc -x INVCALC.CBL -o INVCALC
-./INVCALC
-```
+- souplesse de lecture par blocs de données,
+- descriptions explicites des champs,
+- calculs conditionnels,
+- affichage final explicite.
 
-Les détails exacts peuvent varier selon l'environnement, mais le principe reste identique : compilation puis exécution du binaire généré.
+### 6.3. Progression pédagogique
+Le dépôt est conçu comme un parcours d'apprentissage :
 
----
+- base : chaînes, variables, affichage,
+- intermédiaire : structures, tableaux, conditions,
+- avancé : calculs monétaires et scientifiques,
+- démonstration : cas métier et calculs spécialisés.
 
-## 8. Conclusion
-
-Le dépôt `AltecaGuillaumeG/test` constitue un recueil d'exemples COBOL orientés pédagogie. Il couvre un large éventail de notions essentielles, allant des bases de la langue aux structures métiers les plus courantes : manipulation de chaînes, calculs, conditions, tableaux, dates, monnaies et affichage utilisateur.
-
-L'ensemble est cohérent avec un objectif d'apprentissage et de démonstration de la puissance de COBOL dans plusieurs contextes, notamment la gestion commerciale et la manipulation de données structurées.
-
-Cette documentation offre une vue synthétique du projet et constitue une base de référence pour comprendre les exemples présents dans le dépôt.
-
----
-
-## 9. Fichiers principaux du dépôt
-
-- `HELLO.CBL` : salutation et traitement de chaînes
-- `STRINGIT.CBL` : concaténation, référence partielle, inspection de chaînes
-- `INVCALC.CBL` : calcul d'une facture avec taxes
-- `ATTRACT.CBL` : calcul scientifique avec flottants
-- `DATE1.CBL`, `DATE2.CBL` : manipulation des dates
-- `COND88.CBL`, `IFEVAL.CBL` : conditions et structures de contrôle
-- `BRAKES.CBL`, `HEX2TEXT.CBL`, `MOVEME.CBL`, `NOTBOOL.CBL`, `REFORMER.CBL` : exemples complémentaires de logique COBOL
+### 6.4. Unités d'apprentissage indépendantes
+Chaque programme est autonome, ce qui permet de l'étudier seul sans dépendre d'un autre fichier. Néanmoins, les programmes se complètent mutuellement et forment un corpus cohérent de référence.
 
 ---
 
-Document généré dans le cadre de l'analyse du dépôt COBOL `AltecaGuillaumeG/test`.
+## 7. Mécanismes COBOL récurrents dans le dépôt
+
+### 7.1. `PIC` et qualification des données
+Le dépôt montre une grande variété de zones de données :
+
+- `PIC X(...)` pour les chaînes,
+- `PIC 9(...)` pour les chiffres,
+- `PIC S9(...)` pour les valeurs signées,
+- `PIC ... COMP-3` pour données compactées,
+- `PIC ... COMP-2` pour flottants.
+
+### 7.2. `88` levels et états nommés
+Le mécanisme `88` est central dans les programmes de type facture. Il permet de définir des états logiques sur une variable, ce qui rend le code plus lisible et évite les comparaisons littérales répétées.
+
+### 7.3. `PERFORM` et boucles structurées
+Le dépôt montre le fonctionnement de `PERFORM` en plusieurs formes :
+
+- `PERFORM ... UNTIL ...`
+- `PERFORM WITH TEST BEFORE VARYING ...`
+- `PERFORM` sur sections de code.
+
+### 7.4. `STRING`, `INSPECT`, et `MOVE`
+Ces opérations sont répétées dans plusieurs exemples. Elles sont la base du traitement textuel en COBOL et représentent la technique la plus utilisée dans la collection.
+
+### 7.5. Sortie console et écriture de résultats
+Les programmes utilisent systématiquement `DISPLAY` pour rendre les résultats visibles. Cela correspond au paradigme historique COBOL, où les traitements de données s'effectuent souvent via estándar d'entrée/sortie textuelle.
+
+---
+
+## 8. Analyse synthétique des relations entre fichiers
+
+### Enchaînement naturel des compétences
+
+- `HELLO.CBL` apprend à lire et reformater un texte simple.
+- `STRINGIT.CBL` formalise le traitement de chaînes avec plusieurs zones et concaténations.
+- `INVCALC.CBL` applique ces techniques à des données structurées et monétaires.
+- `ATTRACT.CBL` montre que la même logique peut servir à des calculs scientifiques à virgule flottante.
+- Les autres fichiers approfondissent des cas particuliers ou des sous-thèmes.
+
+### Conclusion sur la cohérence du dépôt
+Le dépôt est cohérent parce que chaque programme est une variation sur un même thème : orchestrer des données structurées, les transformer, les calculer et les afficher. La différence réside dans la nature des données et le type d'opération effectuée.
+
+---
+
+## 9. Conclusion technique
+
+Le dépôt `AltecaGuillaumeG/test` est un corpus pédagogique de programmes COBOL entièrement orienté démonstration. Son intérêt technique est qu'il ne se limite pas à un seul sujet de programmation ; il couvre plusieurs dimensions du langage :
+
+- gestion de chaînes,
+- manipulation de données structurées,
+- calcul arithmétique,
+- conditions et états nommés,
+- tableaux, boucles et itérations,
+- calculs monétaires,
+- calculs scientifiques,
+- I/O homme-machine via la console.
+
+Le point central est la forte cohérence entre les programmes : chacun illustre un mécanisme COBOL précis, mais tous partageant la même philosophie de modélisation du problème sous forme de données explicites et de flux de calculs structurés.
+
+C'est donc un dépôt très comme un ensemble de "micro-cas d'utilisation COBOL" conçu pour enseigner la logique de programmation du langage à travers des exemples simples, autonomes et directement exploitables.
+
+---
+
+## 10. Fichiers principaux à retenir
+
+- `HELLO.CBL` : base du texte et des chaînes
+- `STRINGIT.CBL` : traitement avancé des chaînes
+- `INVCALC.CBL` : logique métier et monétaire
+- `ATTRACT.CBL` : calcul scientifique et flottants
+- `COND88.CBL` : états logiques nommés
+- `DATE1.CBL`, `DATE2.CBL` : gestion des dates
+- `IFEVAL.CBL` : conditions et séquencement
+- `HEX2TEXT.CBL`, `MOVEME.CBL`, `NOTBOOL.CBL`, `REFORMER.CBL` : exemples complémentaires
+
+Le dépôt fonctionne comme un kit d'apprentissage structuré en modules thématiques, où chaque fichier est à la fois autonome et complémentaire des autres.
